@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPT-R</title>
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#1d4ed8">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #0f172a;
+    }
+
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #1d4ed8, #60a5fa);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 380px;
+      background: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+    }
+
+    .login-card h1 {
+      margin: 0 0 6px;
+      color: #1d4ed8;
+      font-size: 34px;
+      text-align: center;
+    }
+
+    .login-card p {
+      margin: 0 0 24px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    input {
+      border: 1px solid #cbd5e1;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #1d4ed8;
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+    }
+
+    button {
+      border: 0;
+      background: #1d4ed8;
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .erro {
+      margin-top: 12px;
+      color: #b91c1c;
+      font-weight: 700;
+      text-align: center;
+      display: none;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: none;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 230px;
+      height: 100vh;
+      background: #0f2f6b;
+      color: white;
+      padding: 22px 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 28px;
+    }
+
+    .nav button,
+    .logout button {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.18);
+      text-align: left;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .nav button:hover,
+    .logout button:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .logout {
+      margin-top: auto;
+    }
+
+    .main {
+      margin-left: 230px;
+      padding: 26px;
+    }
+
+    .topbar {
+      background: white;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      margin-bottom: 22px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      color: #1d4ed8;
+    }
+
+    .topbar span {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(130px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      aspect-ratio: 1 / 1;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #1d4ed8;
+      cursor: pointer;
+      border: 1px solid #e2e8f0;
+    }
+
+    .card:hover {
+      border-color: #1d4ed8;
+      transform: translateY(-2px);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .alunos-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .back-btn {
+      width: auto;
+      padding: 10px 14px;
+      background: #64748b;
+    }
+
+    table {
+      width: 100%;
+      background: white;
+      border-collapse: collapse;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    th {
+      background: #1d4ed8;
+      color: white;
+      text-align: left;
+      padding: 13px;
+    }
+
+    td {
+      padding: 13px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 16px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section id="loginPage" class="login-page">
+    <div class="login-card">
+      <h1>UPT-R</h1>
+      <p>Acesse sua área</p>
+
+      <input id="usuario" type="text" placeholder="Usuário">
+      <input id="senha" type="password" placeholder="Senha">
+
+      <button id="btnLogin" onclick="login()">Entrar</button>
+      <div id="erroLogin" class="erro">Usuário ou senha incorretos.</div>
+    </div>
+  </section>
+
+  <section id="appPage" class="app">
+    <aside class="sidebar">
+      <div class="brand">UPT-R</div>
+
+      <div class="nav">
+        <button onclick="mostrarInicio()">1. Início</button>
+        <button onclick="avisoEmBreve()">2. Função 2</button>
+        <button onclick="avisoEmBreve()">3. Função 3</button>
+        <button onclick="avisoEmBreve()">4. Função 4</button>
+        <button onclick="avisoEmBreve()">5. Função 5</button>
+      </div>
+
+      <div class="logout">
+        <button onclick="sair()">Sair</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h2 id="tituloPagina">Tela inicial</h2>
+        <span id="usuarioLogado"></span>
+      </div>
+
+      <div id="viewInicio" class="view active">
+        <div class="grid">
+          <div class="card" onclick="abrirAlunos()">Alunos</div>
+          <div class="card" onclick="avisoEmBreve()">Em breve 1</div>
+          <div class="card" onclick="avisoEmBreve()">Em breve 2</div>
+          <div class="card" onclick="avisoEmBreve()">Em breve 3</div>
+          <div class="card" onclick="avisoEmBreve()">Em breve 4</div>
+          <div class="card" onclick="avisoEmBreve()">Em breve 5</div>
+        </div>
+      </div>
+
+      <div id="viewAlunos" class="view">
+        <div class="alunos-header">
+          <button class="back-btn" onclick="mostrarInicio()">Voltar</button>
+          <button id="btnAtualizarAlunos" onclick="carregarAlunos()">Atualizar lista</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome do aluno</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyAlunos"></tbody>
+        </table>
+      </div>
+    </main>
+  </section>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbz9l1UN7lve67oljik1eHEElDLBNF0BT4_B4Gl-FoMo/exec";
+
+    function chamarApi(params) {
+      return new Promise((resolve, reject) => {
+        const callbackName = "jsonp_" + Date.now() + "_" + Math.floor(Math.random() * 10000);
+        params.callback = callbackName;
+
+        const script = document.createElement("script");
+        const query = new URLSearchParams(params).toString();
+
+        window[callbackName] = function(resposta) {
+          delete window[callbackName];
+          script.remove();
+          resolve(resposta);
+        };
+
+        script.onerror = function() {
+          delete window[callbackName];
+          script.remove();
+          reject(new Error("Erro ao conectar com o servidor."));
+        };
+
+        script.src = API_URL + "?" + query;
+        document.body.appendChild(script);
+      });
+    }
+
+    async function login() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const senha = document.getElementById("senha").value.trim();
+      const btn = document.getElementById("btnLogin");
+      const erro = document.getElementById("erroLogin");
+
+      erro.style.display = "none";
+
+      if (!usuario || !senha) {
+        erro.innerText = "Digite usuário e senha.";
+        erro.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = "Entrando...";
+
+      try {
+        const res = await chamarApi({
+          action: "login",
+          user: usuario,
+          pass: senha
+        });
+
+        if (res.sucesso) {
+          localStorage.setItem("upt_r_usuario", res.usuario);
+          entrarNoApp(res.usuario);
+        } else {
+          erro.innerText = res.mensagem || "Usuário ou senha incorretos.";
+          erro.style.display = "block";
+        }
+      } catch (e) {
+        erro.innerText = "Erro ao conectar com o servidor.";
+        erro.style.display = "block";
+      }
+
+      btn.disabled = false;
+      btn.innerText = "Entrar";
+    }
+
+    function entrarNoApp(usuario) {
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("appPage").style.display = "block";
+      document.getElementById("usuarioLogado").innerText = "Usuário: " + usuario;
+      mostrarInicio();
+    }
+
+    function mostrarInicio() {
+      document.getElementById("tituloPagina").innerText = "Tela inicial";
+      document.getElementById("viewInicio").classList.add("active");
+      document.getElementById("viewAlunos").classList.remove("active");
+    }
+
+    async function abrirAlunos() {
+      document.getElementById("tituloPagina").innerText = "Alunos";
+      document.getElementById("viewInicio").classList.remove("active");
+      document.getElementById("viewAlunos").classList.add("active");
+      await carregarAlunos();
+    }
+
+    async function carregarAlunos() {
+      const btn = document.getElementById("btnAtualizarAlunos");
+      const tbody = document.getElementById("tbodyAlunos");
+
+      btn.disabled = true;
+      btn.innerText = "Carregando...";
+      tbody.innerHTML = "<tr><td colspan='2'>Carregando alunos...</td></tr>";
+
+      try {
+        const res = await chamarApi({ action: "alunos" });
+
+        if (!res.sucesso) {
+          tbody.innerHTML = "<tr><td colspan='2'>" + (res.mensagem || "Erro ao carregar alunos.") + "</td></tr>";
+          return;
+        }
+
+        if (res.alunos.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='2'>Nenhum aluno encontrado.</td></tr>";
+          return;
+        }
+
+        tbody.innerHTML = "";
+
+        res.alunos.forEach(aluno => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<td>" + aluno.id + "</td><td>" + aluno.nome + "</td>";
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        tbody.innerHTML = "<tr><td colspan='2'>Erro ao conectar com o servidor.</td></tr>";
+      }
+
+      btn.disabled = false;
+      btn.innerText = "Atualizar lista";
+    }
+
+    function avisoEmBreve() {
+      alert("Função em breve.");
+    }
+
+    function sair() {
+      localStorage.removeItem("upt_r_usuario");
+      document.getElementById("usuario").value = "";
+      document.getElementById("senha").value = "";
+      document.getElementById("appPage").style.display = "none";
+      document.getElementById("loginPage").style.display = "flex";
+    }
+
+    const usuarioSalvo = localStorage.getItem("upt_r_usuario");
+    if (usuarioSalvo) {
+      entrarNoApp(usuarioSalvo);
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js");
+    }
+  </script>
+</body>
+</html>
